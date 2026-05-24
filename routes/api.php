@@ -93,3 +93,21 @@ Route::get('/test-email', function() {
         return response()->json(['error' => $e->getMessage()]);
     }
 });
+
+Route::get('/test-email2', function() {
+    try {
+        config(['mail.mailers.smtp.verify_peer' => false]);
+        \Illuminate\Support\Facades\Mail::raw('Test email desde Render', function($m) {
+            $m->to('rayhenebelmoumene@gmail.com')
+              ->subject('Test Fitt-y-Nova');
+        });
+        return response()->json(['ok' => true, 'config' => [
+            'host' => config('mail.mailers.smtp.host'),
+            'port' => config('mail.mailers.smtp.port'),
+            'username' => config('mail.mailers.smtp.username'),
+            'from' => config('mail.from.address'),
+        ]]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
+});
