@@ -15,6 +15,8 @@ export default function Perfil() {
     const [loading, setLoading] = useState(true)
     const [formDevolucion, setFormDevolucion] = useState({ pedido_id: '', motivo: '' })
     const [mensajeDevolucion, setMensajeDevolucion] = useState('')
+    const [confirmarEliminar, setConfirmarEliminar] = useState(false)
+    const [eliminando, setEliminando] = useState(false)
 
     useEffect(() => {
         if (!user) { navigate('/login'); return }
@@ -42,6 +44,18 @@ export default function Perfil() {
             setDevoluciones(res.data)
         } catch {
             setMensajeDevolucion('✗ Error al enviar la devolución.')
+        }
+    }
+
+    const eliminarCuenta = async () => {
+        setEliminando(true)
+        try {
+            await api.delete('/auth/cuenta')
+            logout()
+            navigate('/')
+        } catch {
+            setEliminando(false)
+            setConfirmarEliminar(false)
         }
     }
 
@@ -89,6 +103,47 @@ export default function Perfil() {
                 }
             `}</style>
             <Navbar />
+
+            {/* Modal confirmar eliminar */}
+            {confirmarEliminar && (
+                <div style={{
+                    position: 'fixed', inset: 0, zIndex: 2000,
+                    background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(4px)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px',
+                }}>
+                    <div style={{
+                        background: '#0a1628', border: '1px solid rgba(252,129,129,0.3)',
+                        borderRadius: '8px', padding: '40px', maxWidth: '440px', width: '100%', textAlign: 'center',
+                    }}>
+                        <p style={{ fontSize: '40px', marginBottom: '16px' }}>⚠️</p>
+                        <h3 style={{ fontFamily: "'Bebas Neue'", fontSize: '28px', letterSpacing: '3px', color: '#fc8181', marginBottom: '16px' }}>
+                            ELIMINAR CUENTA
+                        </h3>
+                        <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', lineHeight: '1.6', marginBottom: '32px' }}>
+                            Esta acción es irreversible. Se eliminarán todos tus datos, pedidos, reseñas y lista de deseos permanentemente.
+                        </p>
+                        <div style={{ display: 'flex', gap: '12px' }}>
+                            <button onClick={() => setConfirmarEliminar(false)} style={{
+                                flex: 1, background: 'transparent',
+                                border: '1px solid rgba(255,255,255,0.2)',
+                                color: 'rgba(255,255,255,0.5)', padding: '12px',
+                                fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase',
+                                cursor: 'pointer', borderRadius: '4px',
+                            }}>Cancelar</button>
+                            <button onClick={eliminarCuenta} disabled={eliminando} style={{
+                                flex: 1, background: 'rgba(252,129,129,0.1)',
+                                border: '1px solid rgba(252,129,129,0.4)',
+                                color: '#fc8181', padding: '12px',
+                                fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase',
+                                cursor: eliminando ? 'not-allowed' : 'pointer', borderRadius: '4px',
+                            }}>
+                                {eliminando ? 'Eliminando...' : 'Sí, eliminar'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="perfil-padding" style={{ maxWidth: '1100px', margin: '0 auto', padding: '120px 40px 80px' }}>
 
                 {/* Header */}
@@ -106,14 +161,22 @@ export default function Perfil() {
                         <h1 className="perfil-nombre" style={{ fontFamily: "'Bebas Neue'", fontSize: '36px', letterSpacing: '4px', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.nombre} {user?.apellidos}</h1>
                         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.email}</p>
                     </div>
-                    <button className="perfil-salir" onClick={() => { logout(); navigate('/') }} style={{
-                        marginLeft: 'auto', background: 'transparent',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        color: 'rgba(255,255,255,0.4)', padding: '8px 20px',
-                        fontSize: '11px', letterSpacing: '2px',
-                        textTransform: 'uppercase', cursor: 'pointer', borderRadius: '4px',
-                        flexShrink: 0,
-                    }}>Salir</button>
+                    <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                        <button className="perfil-salir" onClick={() => { logout(); navigate('/') }} style={{
+                            marginLeft: 'auto', background: 'transparent',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            color: 'rgba(255,255,255,0.4)', padding: '8px 20px',
+                            fontSize: '11px', letterSpacing: '2px',
+                            textTransform: 'uppercase', cursor: 'pointer', borderRadius: '4px',
+                        }}>Salir</button>
+                        <button onClick={() => setConfirmarEliminar(true)} style={{
+                            background: 'transparent',
+                            border: '1px solid rgba(252,129,129,0.3)',
+                            color: 'rgba(252,129,129,0.6)', padding: '8px 16px',
+                            fontSize: '11px', letterSpacing: '2px',
+                            textTransform: 'uppercase', cursor: 'pointer', borderRadius: '4px',
+                        }}>Eliminar cuenta</button>
+                    </div>
                 </div>
 
                 {/* Tabs */}
