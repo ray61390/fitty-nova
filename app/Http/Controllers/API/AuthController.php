@@ -7,6 +7,7 @@ use App\Models\Usuario;
 use App\Models\Rol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class AuthController extends Controller
 {
@@ -30,6 +31,15 @@ class AuthController extends Controller
             'email'         => $request->email,
             'password_hash' => Hash::make($request->password),
         ]);
+
+        try {
+            Mail::send('emails.bienvenida', ['nombre' => $usuario->nombre], function ($m) use ($usuario) {
+                $m->to($usuario->email, $usuario->nombre)
+                  ->subject('¡Bienvenid@ a Fitt-y-Nova!');
+            });
+        } catch (\Exception $e) {
+            // Si falla el email no bloqueamos el registro
+        }
 
         $token = $usuario->createToken('auth_token')->plainTextToken;
 
