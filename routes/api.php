@@ -85,7 +85,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
 Route::get('/test-email', function() {
     try {
         \Illuminate\Support\Facades\Mail::raw('Test email desde Render', function($m) {
-            $m->to('rayhene@admin.com')
+            $m->to('rayhenebelmoumene@gmail.com')
               ->subject('Test Fitt-y-Nova');
         });
         return response()->json(['ok' => true]);
