@@ -22,8 +22,10 @@ Route::prefix('auth')->group(function () {
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [AuthController::class, 'logout']);
         Route::get('/me',      [AuthController::class, 'me']);
+        Route::delete('/cuenta', [AuthController::class, 'eliminarCuenta']);
     });
 });
+
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink']);
 Route::post('/reset-password',  [PasswordResetController::class, 'resetPassword']);
 
@@ -80,34 +82,4 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/usuarios',               [AdminController::class, 'usuarios']);
     Route::get('/pedidos',                [AdminController::class, 'pedidos']);
     Route::put('/pedidos/{id}',           [AdminController::class, 'actualizarPedido']);
-});Route::middleware('auth:sanctum')->delete('/auth/cuenta', [App\Http\Controllers\API\AuthController::class, 'eliminarCuenta']);
-
-Route::get('/test-email', function() {
-    try {
-        \Illuminate\Support\Facades\Mail::raw('Test email desde Render', function($m) {
-            $m->to('rayhenebelmoumene@gmail.com')
-              ->subject('Test Fitt-y-Nova');
-        });
-        return response()->json(['ok' => true]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
-});
-
-Route::get('/test-email2', function() {
-    try {
-        config(['mail.mailers.smtp.verify_peer' => false]);
-        \Illuminate\Support\Facades\Mail::raw('Test email desde Render', function($m) {
-            $m->to('rayhenebelmoumene@gmail.com')
-              ->subject('Test Fitt-y-Nova');
-        });
-        return response()->json(['ok' => true, 'config' => [
-            'host' => config('mail.mailers.smtp.host'),
-            'port' => config('mail.mailers.smtp.port'),
-            'username' => config('mail.mailers.smtp.username'),
-            'from' => config('mail.from.address'),
-        ]]);
-    } catch (\Exception $e) {
-        return response()->json(['error' => $e->getMessage()]);
-    }
 });
