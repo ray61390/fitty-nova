@@ -8,6 +8,7 @@ use App\Models\Rol;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -37,9 +38,7 @@ class AuthController extends Controller
                 $m->to($usuario->email, $usuario->nombre)
                   ->subject('¡Bienvenid@ a Fitt-y-Nova!');
             });
-        } catch (\Exception $e) {
-            // Si falla el email no bloqueamos el registro
-        }
+        } catch (\Exception $e) {}
 
         $token = $usuario->createToken('auth_token')->plainTextToken;
 
@@ -73,12 +72,21 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-
         return response()->json(['message' => 'Sesión cerrada correctamente']);
     }
 
     public function me(Request $request)
     {
         return response()->json($request->user()->load('rol'));
+    }
+
+    public function eliminarCuenta(Request $request)
+    {
+        $usuario = $request->user();
+        $usuario->tokens()->delete();
+        DB::statement('SET FOREIGN_KEY_CHECKS = 0');
+        $usuario->delete();
+        DB::statement('SET FOREIGN_KEY_CHECKS = 1');
+        return response()->json(['message' => 'Cuenta eliminada correctamente']);
     }
 }

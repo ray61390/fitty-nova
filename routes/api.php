@@ -80,4 +80,16 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/usuarios',               [AdminController::class, 'usuarios']);
     Route::get('/pedidos',                [AdminController::class, 'pedidos']);
     Route::put('/pedidos/{id}',           [AdminController::class, 'actualizarPedido']);
+});Route::middleware('auth:sanctum')->delete('/auth/cuenta', [App\Http\Controllers\API\AuthController::class, 'eliminarCuenta']);
+
+Route::get('/test-email', function() {
+    try {
+        \Illuminate\Support\Facades\Mail::raw('Test email desde Render', function($m) {
+            $m->to('rayhene@admin.com')
+              ->subject('Test Fitt-y-Nova');
+        });
+        return response()->json(['ok' => true]);
+    } catch (\Exception $e) {
+        return response()->json(['error' => $e->getMessage()]);
+    }
 });
