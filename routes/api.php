@@ -80,6 +80,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/usuarios',               [AdminController::class, 'usuarios']);
+    Route::get('/productos',              [AdminController::class, 'todosProductos']);
     Route::get('/pedidos',                [AdminController::class, 'pedidos']);
     Route::put('/pedidos/{id}',           [AdminController::class, 'actualizarPedido']);
 });

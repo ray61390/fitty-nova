@@ -30,8 +30,7 @@ export default function Admin() {
     }
     const cargarProductos = () => {
         setLoading(true)
-        api.get('/productos?page=1').then(res => { setProductos(res.data.data || []); setLoading(false) })
-    }
+api.get('/admin/productos').then(res => { setProductos(res.data || []); setLoading(false) })    }
     const cargarPedidos = () => {
         setLoading(true)
         api.get('/admin/pedidos').then(res => { setPedidos(res.data); setLoading(false) })

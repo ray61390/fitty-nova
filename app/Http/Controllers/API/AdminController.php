@@ -1,12 +1,10 @@
 <?php
-
 namespace App\Http\Controllers\API;
-
 use App\Http\Controllers\Controller;
 use App\Models\Usuario;
 use App\Models\Pedido;
+use App\Models\Producto;
 use Illuminate\Http\Request;
-
 class AdminController extends Controller
 {
     public function usuarios()
@@ -18,8 +16,15 @@ class AdminController extends Controller
             ->orderBy('rol_id')
             ->orderBy('nombre')
             ->get();
-
         return response()->json($usuarios);
+    }
+
+    public function todosProductos()
+    {
+        $productos = Producto::with(['categoria', 'imagenes'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($productos);
     }
 
     public function pedidos()
@@ -27,7 +32,6 @@ class AdminController extends Controller
         $pedidos = Pedido::with(['cliente', 'lineas'])
             ->orderBy('created_at', 'desc')
             ->get();
-
         return response()->json($pedidos);
     }
 
@@ -36,10 +40,8 @@ class AdminController extends Controller
         $request->validate([
             'estado' => 'required|in:pendiente,confirmado,enviado,entregado,cancelado,devuelto',
         ]);
-
         $pedido = Pedido::findOrFail($id);
         $pedido->update(['estado' => $request->estado]);
-
         return response()->json($pedido);
     }
 }
