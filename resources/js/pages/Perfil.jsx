@@ -38,12 +38,12 @@ export default function Perfil() {
         e.preventDefault()
         try {
             await api.post('/devoluciones', formDevolucion)
-            setMensajeDevolucion('✓ Solicitud de devolución enviada correctamente')
+            setMensajeDevolucion('Solicitud enviada correctamente')
             setFormDevolucion({ pedido_id: '', motivo: '' })
             const res = await api.get('/devoluciones')
             setDevoluciones(res.data)
         } catch {
-            setMensajeDevolucion('✗ Error al enviar la devolución.')
+            setMensajeDevolucion('Error al enviar la devolucion.')
         }
     }
 
@@ -62,7 +62,7 @@ export default function Perfil() {
     const menuItems = [
         { id: 'pedidos', label: 'Pedidos', icon: '📦' },
         { id: 'deseos', label: 'Deseos', icon: '♡' },
-        { id: 'resenas', label: 'Reseñas', icon: '★' },
+        { id: 'resenas', label: 'Resenas', icon: '★' },
         { id: 'devoluciones', label: 'Devoluciones', icon: '↩' },
     ]
 
@@ -104,7 +104,6 @@ export default function Perfil() {
             `}</style>
             <Navbar />
 
-            {/* Modal confirmar eliminar */}
             {confirmarEliminar && (
                 <div style={{
                     position: 'fixed', inset: 0, zIndex: 2000,
@@ -120,7 +119,7 @@ export default function Perfil() {
                             ELIMINAR CUENTA
                         </h3>
                         <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '14px', lineHeight: '1.6', marginBottom: '32px' }}>
-                            Esta acción es irreversible. Se eliminarán todos tus datos, pedidos, reseñas y lista de deseos permanentemente.
+                            Esta accion es irreversible. Se eliminaran todos tus datos permanentemente.
                         </p>
                         <div style={{ display: 'flex', gap: '12px' }}>
                             <button onClick={() => setConfirmarEliminar(false)} style={{
@@ -137,7 +136,7 @@ export default function Perfil() {
                                 fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase',
                                 cursor: eliminando ? 'not-allowed' : 'pointer', borderRadius: '4px',
                             }}>
-                                {eliminando ? 'Eliminando...' : 'Sí, eliminar'}
+                                {eliminando ? 'Eliminando...' : 'Si, eliminar'}
                             </button>
                         </div>
                     </div>
@@ -146,7 +145,6 @@ export default function Perfil() {
 
             <div className="perfil-padding" style={{ maxWidth: '1100px', margin: '0 auto', padding: '120px 40px 80px' }}>
 
-                {/* Header */}
                 <div className="perfil-header" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '48px' }}>
                     <div style={{
                         width: '56px', height: '56px', borderRadius: '50%', flexShrink: 0,
@@ -161,10 +159,9 @@ export default function Perfil() {
                         <h1 className="perfil-nombre" style={{ fontFamily: "'Bebas Neue'", fontSize: '36px', letterSpacing: '4px', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.nombre} {user?.apellidos}</h1>
                         <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '13px', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.email}</p>
                     </div>
-                    <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-                        <button className="perfil-salir" onClick={() => { logout(); navigate('/') }} style={{
-                            marginLeft: 'auto', background: 'transparent',
-                            border: '1px solid rgba(255,255,255,0.2)',
+                    <div style={{ display: 'flex', gap: '8px', flexShrink: 0, flexWrap: 'wrap' }}>
+                        <button onClick={() => { logout(); navigate('/') }} style={{
+                            background: 'transparent', border: '1px solid rgba(255,255,255,0.2)',
                             color: 'rgba(255,255,255,0.4)', padding: '8px 20px',
                             fontSize: '11px', letterSpacing: '2px',
                             textTransform: 'uppercase', cursor: 'pointer', borderRadius: '4px',
@@ -179,7 +176,6 @@ export default function Perfil() {
                     </div>
                 </div>
 
-                {/* Tabs */}
                 <div className="perfil-tabs" style={{ display: 'flex', marginBottom: '40px', borderBottom: '1px solid rgba(99,179,237,0.1)', flexWrap: 'wrap', overflowX: 'auto' }}>
                     {menuItems.map(item => (
                         <button className="perfil-tab" key={item.id} onClick={() => setSeccion(item.id)} style={{
@@ -199,13 +195,12 @@ export default function Perfil() {
                     <p style={{ color: '#63b3ed', letterSpacing: '4px', fontSize: '12px' }}>CARGANDO...</p>
                 ) : (
                     <>
-                        {/* Pedidos */}
                         {seccion === 'pedidos' && (
                             <div>
                                 {pedidos.length === 0 ? (
                                     <div style={{ textAlign: 'center', padding: '60px 0' }}>
                                         <p style={{ fontSize: '48px', marginBottom: '16px' }}>📦</p>
-                                        <p style={{ color: 'rgba(255,255,255,0.4)' }}>No tienes pedidos todavía</p>
+                                        <p style={{ color: 'rgba(255,255,255,0.4)' }}>No tienes pedidos todavia</p>
                                         <button onClick={() => navigate('/')} style={{
                                             marginTop: '24px', background: 'linear-gradient(135deg, #1a3a5c, #0d2137)',
                                             color: '#63b3ed', border: '1px solid rgba(99,179,237,0.3)',
@@ -235,8 +230,8 @@ export default function Perfil() {
                                                             {parseFloat(pedido.total).toFixed(2)} €
                                                         </p>
                                                         <span style={{
-                                                            background: `${estadoColor(pedido.estado)}15`,
-                                                            border: `1px solid ${estadoColor(pedido.estado)}40`,
+                                                            background: estadoColor(pedido.estado) + '15',
+                                                            border: '1px solid ' + estadoColor(pedido.estado) + '40',
                                                             color: estadoColor(pedido.estado),
                                                             padding: '4px 10px', borderRadius: '4px',
                                                             fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase',
@@ -249,7 +244,7 @@ export default function Perfil() {
                                                     <div style={{ borderTop: '1px solid rgba(99,179,237,0.08)', paddingTop: '16px', display: 'grid', gap: '12px' }}>
                                                         {pedido.lineas.map(linea => (
                                                             <div key={linea.id}
-                                                                onClick={() => linea.variante?.producto?.id && navigate(`/producto/${linea.variante.producto.id}`)}
+                                                                onClick={() => linea.variante?.producto?.id && navigate('/producto/' + linea.variante.producto.id)}
                                                                 style={{ display: 'flex', gap: '12px', alignItems: 'center', cursor: 'pointer' }}
                                                             >
                                                                 <div style={{ width: '44px', height: '44px', background: '#0a1628', borderRadius: '4px', overflow: 'hidden', flexShrink: 0 }}>
@@ -283,13 +278,12 @@ export default function Perfil() {
                             </div>
                         )}
 
-                        {/* Lista de deseos */}
                         {seccion === 'deseos' && (
                             <div>
                                 {deseos.length === 0 ? (
                                     <div style={{ textAlign: 'center', padding: '60px 0' }}>
                                         <p style={{ fontSize: '48px', marginBottom: '16px' }}>♡</p>
-                                        <p style={{ color: 'rgba(255,255,255,0.4)' }}>Tu lista de deseos está vacía</p>
+                                        <p style={{ color: 'rgba(255,255,255,0.4)' }}>Tu lista de deseos esta vacia</p>
                                         <button onClick={() => navigate('/')} style={{
                                             marginTop: '24px', background: 'linear-gradient(135deg, #1a3a5c, #0d2137)',
                                             color: '#63b3ed', border: '1px solid rgba(99,179,237,0.3)',
@@ -301,7 +295,7 @@ export default function Perfil() {
                                     <div className="deseos-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
                                         {deseos.map(item => (
                                             <div key={item.producto_id}
-                                                onClick={() => navigate(`/producto/${item.producto_id}`)}
+                                                onClick={() => navigate('/producto/' + item.producto_id)}
                                                 style={{
                                                     background: 'rgba(10,22,40,0.8)',
                                                     border: '1px solid rgba(99,179,237,0.12)',
@@ -332,13 +326,12 @@ export default function Perfil() {
                             </div>
                         )}
 
-                        {/* Mis Reseñas */}
                         {seccion === 'resenas' && (
                             <div>
                                 {resenas.length === 0 ? (
                                     <div style={{ textAlign: 'center', padding: '60px 0' }}>
                                         <p style={{ fontSize: '48px', marginBottom: '16px' }}>★</p>
-                                        <p style={{ color: 'rgba(255,255,255,0.4)' }}>No has escrito ninguna reseña todavía</p>
+                                        <p style={{ color: 'rgba(255,255,255,0.4)' }}>No has escrito ninguna resena todavia</p>
                                         <button onClick={() => navigate('/')} style={{
                                             marginTop: '24px', background: 'linear-gradient(135deg, #1a3a5c, #0d2137)',
                                             color: '#63b3ed', border: '1px solid rgba(99,179,237,0.3)',
@@ -357,7 +350,7 @@ export default function Perfil() {
                                                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', gap: '12px', flexWrap: 'wrap' }}>
                                                     <div>
                                                         <p style={{ color: '#63b3ed', fontSize: '12px', letterSpacing: '2px', textTransform: 'uppercase', margin: '0 0 6px', cursor: 'pointer' }}
-                                                            onClick={() => navigate(`/producto/${r.producto_id}`)}>
+                                                            onClick={() => navigate('/producto/' + r.producto_id)}>
                                                             {r.producto?.nombre}
                                                         </p>
                                                         <div style={{ display: 'flex', gap: '2px' }}>
@@ -368,7 +361,7 @@ export default function Perfil() {
                                                     </div>
                                                     <span style={{
                                                         background: r.aprobada ? 'rgba(104,211,145,0.1)' : 'rgba(246,173,85,0.1)',
-                                                        border: `1px solid ${r.aprobada ? 'rgba(104,211,145,0.3)' : 'rgba(246,173,85,0.3)'}`,
+                                                        border: '1px solid ' + (r.aprobada ? 'rgba(104,211,145,0.3)' : 'rgba(246,173,85,0.3)'),
                                                         color: r.aprobada ? '#68d391' : '#f6ad55',
                                                         padding: '4px 10px', borderRadius: '4px',
                                                         fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase',
@@ -389,13 +382,12 @@ export default function Perfil() {
                             </div>
                         )}
 
-                        {/* Devoluciones */}
                         {seccion === 'devoluciones' && (
                             <div>
                                 <div className="devoluciones-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '40px' }}>
                                     <div>
                                         <h3 style={{ fontFamily: "'Bebas Neue'", fontSize: '24px', letterSpacing: '3px', marginBottom: '24px', color: '#63b3ed' }}>
-                                            SOLICITAR DEVOLUCIÓN
+                                            SOLICITAR DEVOLUCION
                                         </h3>
                                         <div style={{ background: 'rgba(10,22,40,0.8)', border: '1px solid rgba(99,179,237,0.12)', borderRadius: '8px', padding: '24px' }}>
                                             <form onSubmit={enviarDevolucion}>
@@ -411,12 +403,12 @@ export default function Perfil() {
                                                     ))}
                                                 </select>
                                                 <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '8px' }}>Motivo</p>
-                                                <textarea placeholder="Explica el motivo de la devolución..."
+                                                <textarea placeholder="Explica el motivo de la devolucion..."
                                                     value={formDevolucion.motivo}
                                                     onChange={e => setFormDevolucion({ ...formDevolucion, motivo: e.target.value })}
                                                     rows={4} style={{ ...inputStyle, resize: 'vertical' }} required />
                                                 {mensajeDevolucion && (
-                                                    <p style={{ color: mensajeDevolucion.includes('✓') ? '#68d391' : '#fc8181', fontSize: '13px', marginBottom: '16px' }}>
+                                                    <p style={{ color: mensajeDevolucion.includes('correctamente') ? '#68d391' : '#fc8181', fontSize: '13px', marginBottom: '16px' }}>
                                                         {mensajeDevolucion}
                                                     </p>
                                                 )}
@@ -449,7 +441,7 @@ export default function Perfil() {
                                                             </p>
                                                             <span style={{
                                                                 background: d.estado === 'aprobada' ? 'rgba(104,211,145,0.1)' : d.estado === 'rechazada' ? 'rgba(252,129,129,0.1)' : 'rgba(99,179,237,0.1)',
-                                                                border: `1px solid ${d.estado === 'aprobada' ? 'rgba(104,211,145,0.3)' : d.estado === 'rechazada' ? 'rgba(252,129,129,0.3)' : 'rgba(99,179,237,0.3)'}`,
+                                                                border: '1px solid ' + (d.estado === 'aprobada' ? 'rgba(104,211,145,0.3)' : d.estado === 'rechazada' ? 'rgba(252,129,129,0.3)' : 'rgba(99,179,237,0.3)'),
                                                                 color: d.estado === 'aprobada' ? '#68d391' : d.estado === 'rechazada' ? '#fc8181' : '#63b3ed',
                                                                 padding: '3px 10px', borderRadius: '4px',
                                                                 fontSize: '10px', letterSpacing: '2px', textTransform: 'uppercase',
