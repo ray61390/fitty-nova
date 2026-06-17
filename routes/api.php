@@ -84,3 +84,16 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/pedidos',                [AdminController::class, 'pedidos']);
     Route::put('/pedidos/{id}',           [AdminController::class, 'actualizarPedido']);
 });
+
+Route::get('/debug-storage', function() {
+    $base = storage_path('app/public/productos');
+    $linkPath = public_path('storage');
+    return response()->json([
+        'storage_existe' => file_exists($base),
+        'archivos_storage' => file_exists($base) ? array_slice(scandir($base), 0, 10) : [],
+        'symlink_existe' => file_exists($linkPath),
+        'es_symlink' => is_link($linkPath),
+        'symlink_apunta_a' => is_link($linkPath) ? readlink($linkPath) : null,
+        'public_storage_productos_existe' => file_exists(public_path('storage/productos')),
+    ]);
+});
